@@ -16,6 +16,7 @@ import (
 	"github.com/integr8ly/integreatly-operator/pkg/products/amqstreams"
 	"github.com/integr8ly/integreatly-operator/pkg/products/apicurioregistry"
 	"github.com/integr8ly/integreatly-operator/pkg/products/apicurito"
+	"github.com/integr8ly/integreatly-operator/pkg/products/camelk"
 	"github.com/integr8ly/integreatly-operator/pkg/products/cloudresources"
 	"github.com/integr8ly/integreatly-operator/pkg/products/codeready"
 	"github.com/integr8ly/integreatly-operator/pkg/products/datasync"
@@ -172,6 +173,8 @@ func NewReconciler(product integreatlyv1alpha1.ProductName, rc *rest.Config, con
 		reconciler, err = cloudresources.NewReconciler(configManager, installation, mpm, recorder)
 	case integreatlyv1alpha1.ProductDataSync:
 		reconciler, err = datasync.NewReconciler(configManager, installation, mpm, recorder)
+	case integreatlyv1alpha1.ProductCamelK:
+		reconciler, err = camelk.NewReconciler(configManager, installation, mpm, recorder)
 	default:
 		err = errors.New("unknown products: " + string(product))
 		reconciler = &NoOp{}

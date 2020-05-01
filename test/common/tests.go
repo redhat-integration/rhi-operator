@@ -56,6 +56,7 @@ var (
 
 	SELF_MANAGED_PRODUCT_TESTS = []TestCase{
 		//	{"Test ApicurioRegistry API", TestApicurioRegistryAPI},
+		{"Verify Camel K", TestCamelKCreateAndDelete},
 	}
 
 	DESTRUCTIVE_TESTS = []TestCase{

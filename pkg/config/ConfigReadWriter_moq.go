@@ -17,6 +17,7 @@ var (
 	lockConfigReadWriterMockReadAMQStreams              sync.RWMutex
 	lockConfigReadWriterMockReadApicurioRegistry        sync.RWMutex
 	lockConfigReadWriterMockReadApicurito               sync.RWMutex
+	lockConfigReadWriterMockReadCamelK                  sync.RWMutex
 	lockConfigReadWriterMockReadCloudResources          sync.RWMutex
 	lockConfigReadWriterMockReadCodeReady               sync.RWMutex
 	lockConfigReadWriterMockReadDataSync                sync.RWMutex
@@ -67,6 +68,9 @@ var _ ConfigReadWriter = &ConfigReadWriterMock{}
 //             },
 //             ReadApicuritoFunc: func() (*Apicurito, error) {
 // 	               panic("mock out the ReadApicurito method")
+//             },
+//             ReadCamelKFunc: func() (*CamelK, error) {
+// 	               panic("mock out the ReadCamelK method")
 //             },
 //             ReadCloudResourcesFunc: func() (*CloudResources, error) {
 // 	               panic("mock out the ReadCloudResources method")
@@ -144,6 +148,9 @@ type ConfigReadWriterMock struct {
 	// ReadApicuritoFunc mocks the ReadApicurito method.
 	ReadApicuritoFunc func() (*Apicurito, error)
 
+	// ReadCamelKFunc mocks the ReadCamelK method.
+	ReadCamelKFunc func() (*CamelK, error)
+
 	// ReadCloudResourcesFunc mocks the ReadCloudResources method.
 	ReadCloudResourcesFunc func() (*CloudResources, error)
 
@@ -214,6 +221,9 @@ type ConfigReadWriterMock struct {
 		}
 		// ReadApicurito holds details about calls to the ReadApicurito method.
 		ReadApicurito []struct {
+		}
+		// ReadCamelK holds details about calls to the ReadCamelK method.
+		ReadCamelK []struct {
 		}
 		// ReadCloudResources holds details about calls to the ReadCloudResources method.
 		ReadCloudResources []struct {
@@ -474,6 +484,32 @@ func (mock *ConfigReadWriterMock) ReadApicuritoCalls() []struct {
 	lockConfigReadWriterMockReadApicurito.RLock()
 	calls = mock.calls.ReadApicurito
 	lockConfigReadWriterMockReadApicurito.RUnlock()
+	return calls
+}
+
+// ReadCamelK calls ReadCamelKFunc.
+func (mock *ConfigReadWriterMock) ReadCamelK() (*CamelK, error) {
+	if mock.ReadCamelKFunc == nil {
+		panic("ConfigReadWriterMock.ReadCamelKFunc: method is nil but ConfigReadWriter.ReadCamelK was just called")
+	}
+	callInfo := struct {
+	}{}
+	lockConfigReadWriterMockReadCamelK.Lock()
+	mock.calls.ReadCamelK = append(mock.calls.ReadCamelK, callInfo)
+	lockConfigReadWriterMockReadCamelK.Unlock()
+	return mock.ReadCamelKFunc()
+}
+
+// ReadCamelKCalls gets all the calls that were made to ReadCamelK.
+// Check the length with:
+//     len(mockedConfigReadWriter.ReadCamelKCalls())
+func (mock *ConfigReadWriterMock) ReadCamelKCalls() []struct {
+} {
+	var calls []struct {
+	}
+	lockConfigReadWriterMockReadCamelK.RLock()
+	calls = mock.calls.ReadCamelK
+	lockConfigReadWriterMockReadCamelK.RUnlock()
 	return calls
 }
 
