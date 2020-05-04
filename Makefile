@@ -1,7 +1,7 @@
 include ./make/*.mk
 
 ORG=integreatly
-NAMESPACE=redhat-rhmi-operator
+NAMESPACE=redhat-integration
 PROJECT=integreatly-operator
 REG=quay.io
 SHELL=/bin/bash
