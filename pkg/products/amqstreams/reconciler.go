@@ -29,8 +29,9 @@ import (
 )
 
 var (
-	defaultInstallationNamespace         = "amq-streams"
-	clusterName                          = "rhmi-cluster"
+	defaultInstallationNamespace = "amq-streams"
+	// ClusterName is the Kafka cluster name
+	ClusterName                          = "rhmi-cluster"
 	manifestPackage                      = "integreatly-amq-streams"
 	kafkaReplicas                        = 3
 	zookeeperReplicas                    = 3
@@ -142,6 +143,12 @@ func (r *Reconciler) Reconcile(ctx context.Context, installation *integreatlyv1a
 		return phase, err
 	}
 
+	phase, err = r.setHostInConfig(ctx, serverClient)
+	if err != nil || phase != integreatlyv1alpha1.PhaseCompleted {
+		events.HandleError(r.recorder, installation, phase, "Failed to share host", err)
+		return phase, err
+	}
+
 	product.Host = r.Config.GetHost()
 	product.Version = r.Config.GetProductVersion()
 	product.OperatorVersion = r.Config.GetOperatorVersion()
@@ -156,7 +163,7 @@ func (r *Reconciler) handleCreatingComponents(ctx context.Context, client k8scli
 
 	kafka := &kafkav1alpha1.Kafka{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      clusterName,
+			Name:      ClusterName,
 			Namespace: r.Config.GetNamespace(),
 		},
 	}
@@ -166,7 +173,7 @@ func (r *Reconciler) handleCreatingComponents(ctx context.Context, client k8scli
 		kafka.APIVersion = fmt.Sprintf("%s/%s", kafkav1alpha1.SchemeGroupVersion.Group, kafkav1alpha1.SchemeGroupVersion.Version)
 		kafka.Kind = kafkav1alpha1.KafkaKind
 
-		kafka.Name = clusterName
+		kafka.Name = ClusterName
 		kafka.Namespace = r.Config.GetNamespace()
 
 		kafka.Spec.Kafka.Version = "2.1.1"
@@ -244,4 +251,22 @@ func (r *Reconciler) allPodsReady(pods *corev1.PodList) bool {
 		}
 	}
 	return true
+}
+
+// setHostInConfig sets the Kafka Bootstrap service address into the config object
+func (r *Reconciler) setHostInConfig(ctx context.Context, client k8sclient.Client) (integreatlyv1alpha1.StatusPhase, error) {
+	service := &corev1.Service{}
+
+	err := client.Get(ctx, k8sclient.ObjectKey{Name: "rhmi-cluster-kafka-bootstrap", Namespace: r.Config.GetNamespace()}, service)
+	if err != nil {
+		return integreatlyv1alpha1.PhaseFailed, fmt.Errorf("failed to read amq streams bootstrap server service: %w", err)
+	}
+
+	r.Config.SetHost(fmt.Sprintf("%s.%s.svc:9092", service.GetName(), service.GetNamespace()))
+	err = r.ConfigManager.WriteConfig(r.Config)
+	if err != nil {
+		return integreatlyv1alpha1.PhaseFailed, fmt.Errorf("could not persist config: %w", err)
+	}
+
+	return integreatlyv1alpha1.PhaseCompleted, nil
 }
