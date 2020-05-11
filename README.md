@@ -1,4 +1,4 @@
-# Integreatly Operator
+# RHI Operator
 
 A Kubernetes Operator based on the Operator SDK for installing and reconciling Integreatly products.
 
