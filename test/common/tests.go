@@ -4,6 +4,18 @@ package common
 // 1. https://gitlab.cee.redhat.com/integreatly-qe/integreatly-test-cases#how-to-automate-a-test-case-and-link-it-back
 // 2. https://gitlab.cee.redhat.com/integreatly-qe/integreatly-test-cases
 var (
+
+	INFRA_TESTS = []Environment{
+		{"managed-gcp", "", MANAGED_PRODUCT_TESTS},
+		{"managed-aws", "", MANAGED_PRODUCT_TESTS},
+		{"self-managed-aws", "", SELF_MANAGED_PRODUCT_TESTS},
+		{"self-managed-gcp", "", SELF_MANAGED_PRODUCT_TESTS},
+		{"managed-aws", "destructive", DESTRUCTIVE_TESTS },
+		{"managed-gcp", "destructive", DESTRUCTIVE_TESTS },
+		{"self-managed-aws", "destructive", DESTRUCTIVE_TESTS },
+		{"self-managed-gcp", "destructive", DESTRUCTIVE_TESTS },
+	}
+
 	ALL_TESTS = []TestCase{
 		// Add all tests that can be executed prior to a completed installation here
 		{"Verify RHMI CRD Exists", TestIntegreatlyCRDExists},
@@ -57,3 +69,15 @@ var (
 		{"J03 - Verify namespaces restored when deleted", TestNamespaceRestoration},
 	}
 )
+
+
+func GetEnv(env string, tag string) []TestCase {
+	for _, in := range INFRA_TESTS {
+		if in.Profile == env && in.Tag == tag {
+			return in.TestCase
+		} else if in.Profile == env {
+			return in.TestCase
+		}
+	}
+	return nil
+}

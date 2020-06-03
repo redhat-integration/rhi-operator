@@ -53,11 +53,15 @@ const (
 	selfManaged                  = "self-managed"
 )
 
-var profile = flag.String("profile", "self-managed", "profile type: managed, self-managed")
+var environment = flag.String("environment", "self-managed", "environment type: managed, self-managed")
+var tag = flag.String("tag", "destructive", "")
 
 func TestIntegreatly(t *testing.T) {
-	if profile != nil {
-		t.Log("Initializing test for profile:", *profile)
+	if environment != nil {
+		t.Log("Initializing test for environment:", *environment)
+	}
+	if tag != nil {
+		t.Log("Initializing test for environment:", *tag)
 	}
 
 	err := framework.AddToFrameworkScheme(apis.AddToScheme, &integreatlyv1alpha1.RHMIList{})
@@ -107,10 +111,10 @@ func TestIntegreatly(t *testing.T) {
 		}
 
 		t.Run("Cluster", func(t *testing.T) {
-			IntegreatlyCluster(t, f, ctx, *profile)
+			IntegreatlyCluster(t, f, ctx, *environment)
 		})
 
-		for _, test := range common.HAPPY_PATH_TESTS {
+		for _, test := range common.HAPPY_PATH_TESTS{
 			t.Run(test.Description, func(t *testing.T) {
 				testingContext, err = common.NewTestingContext(f.KubeConfig)
 				if err != nil {
@@ -120,10 +124,16 @@ func TestIntegreatly(t *testing.T) {
 			})
 		}
 
-		if *profile == managed {
-			testingContext, err = runProductTest(t, testingContext, err, f, common.MANAGED_PRODUCT_TESTS)
-		} else if *profile == "self-managed" {
-			testingContext, err = runProductTest(t, testingContext, err, f, common.SELF_MANAGED_PRODUCT_TESTS)
+		PROFLE_TESTS := common.GetEnv(*environment, *tag)
+
+		for _, test := range PROFLE_TESTS {
+			t.Run(test.Description, func(t *testing.T) {
+				testingContext, err = common.NewTestingContext(f.KubeConfig)
+				if err != nil {
+					t.Fatal("failed to create testing context", err)
+				}
+				test.Test(t, testingContext)
+			})
 		}
 
 		// Do not execute these tests unless DESTRUCTIVE is set to true
@@ -157,19 +167,6 @@ func TestIntegreatly(t *testing.T) {
 	} else {
 		ctx.Cleanup()
 	}
-}
-
-func runProductTest(t *testing.T, testingContext *common.TestingContext, err error, f *framework.Framework, tests []common.TestCase) (*common.TestingContext, error) {
-	for _, test := range tests {
-		t.Run(test.Description, func(t *testing.T) {
-			testingContext, err = common.NewTestingContext(f.KubeConfig)
-			if err != nil {
-				t.Fatal("failed to create testing context", err)
-			}
-			test.Test(t, testingContext)
-		})
-	}
-	return testingContext, err
 }
 
 func waitForProductDeployment(t *testing.T, f *framework.Framework, ctx *framework.TestCtx, product, deploymentName string) error {
@@ -693,7 +690,9 @@ func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.Tes
 	}
 	//TODO: split them into their own test cases
 	// check that all of the operators deploy and all of the installation phases complete
-	if profile == "managed" {
+	profile = profileCheck(*environment)
+
+	if profile ==  managed {
 		//Product Stage - verify operators deploy
 		products := map[string]string{
 			"3scale":               "3scale-operator",
@@ -719,4 +718,15 @@ func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.Tes
 		}
 	}
 
+}
+
+func profileCheck(profile string) string {
+	spl := strings.Split(profile, "-")
+	if spl[0] == "self" {
+		return selfManaged
+	} else if spl[0] == managed {
+		return managed
+	}
+
+	return managed
 }
