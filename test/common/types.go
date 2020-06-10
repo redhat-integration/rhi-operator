@@ -39,12 +39,6 @@ const (
 	MonitoringSpecNamespace           = NamespacePrefix + "monitoring"
 )
 
-type Environment struct {
-	Profile string
-	Tag string
-	TestCase []TestCase
-}
-
 type TestingContext struct {
 	Client          dynclient.Client
 	KubeConfig      *rest.Config
