@@ -1,10 +1,8 @@
 package e2e
 
 import (
-	"bytes"
 	"context"
 	goctx "context"
-	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -13,20 +11,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/integr8ly/integreatly-operator/test/common"
-	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
-	"k8s.io/client-go/tools/remotecommand"
-
 	"github.com/integr8ly/integreatly-operator/pkg/apis"
 	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/pkg/apis/integreatly/v1alpha1"
+	"github.com/integr8ly/integreatly-operator/test/common"
+	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 
 	framework "github.com/operator-framework/operator-sdk/pkg/test"
 	"github.com/operator-framework/operator-sdk/pkg/test/e2eutil"
 
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/runtime"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/intstr"
@@ -49,21 +43,9 @@ const (
 	productsStageTimout          = time.Minute * 30
 	solutionExplorerStageTimeout = time.Minute * 10
 	artifactsDirEnv              = "ARTIFACT_DIR"
-	managed                      = "managed"
-	selfManaged                  = "self-managed"
 )
 
-var environment = flag.String("environment", "self-managed", "environment type: managed, self-managed")
-var tag = flag.String("tag", "destructive", "")
-
 func TestIntegreatly(t *testing.T) {
-	if environment != nil {
-		t.Log("Initializing test for environment:", *environment)
-	}
-	if tag != nil {
-		t.Log("Initializing test for environment:", *tag)
-	}
-
 	err := framework.AddToFrameworkScheme(apis.AddToScheme, &integreatlyv1alpha1.RHMIList{})
 	if err != nil {
 		t.Fatalf("failed to add custom resource scheme to framework: %v", err)
@@ -111,7 +93,7 @@ func TestIntegreatly(t *testing.T) {
 		}
 
 		t.Run("Cluster", func(t *testing.T) {
-			IntegreatlyCluster(t, f, ctx, *environment)
+			IntegreatlyCluster(t, f, ctx)
 		})
 
 		for _, test := range common.HAPPY_PATH_TESTS{
@@ -124,9 +106,23 @@ func TestIntegreatly(t *testing.T) {
 			})
 		}
 
-		PROFLE_TESTS := common.GetEnv(*environment, *tag)
+		isSelfManaged, err := common.IsSelfManaged(f.Client.Client)
+		if err != nil {
+			t.Fatal("error getting isSelfManaged:", err)
+		}
 
-		for _, test := range PROFLE_TESTS {
+		if !isSelfManaged {
+			for _, test := range common.MANAGED_PRODUCT_TESTS {
+				t.Run(test.Description, func(t *testing.T) {
+					testingContext, err = common.NewTestingContext(f.KubeConfig)
+					if err != nil {
+						t.Fatal("failed to create testing context", err)
+					}
+					test.Test(t, testingContext)
+				})
+			}
+		} else {
+			for _, test := range common.SELF_MANAGED_PRODUCT_TESTS {
 			t.Run(test.Description, func(t *testing.T) {
 				testingContext, err = common.NewTestingContext(f.KubeConfig)
 				if err != nil {
@@ -134,6 +130,8 @@ func TestIntegreatly(t *testing.T) {
 				}
 				test.Test(t, testingContext)
 			})
+		}
+
 		}
 
 		// Do not execute these tests unless DESTRUCTIVE is set to true
@@ -194,46 +192,6 @@ func waitForProductDeployment(t *testing.T, f *framework.Framework, ctx *framewo
 	return nil
 }
 
-func execToPod(command string, podname string, namespace string, container string, f *framework.Framework) (string, error) {
-	req := f.KubeClient.CoreV1().RESTClient().Post().
-		Resource("pods").
-		Name(podname).
-		Namespace(namespace).
-		SubResource("exec").
-		Param("container", container)
-	scheme := runtime.NewScheme()
-	if err := corev1.AddToScheme(scheme); err != nil {
-		return "", fmt.Errorf("error adding to scheme: %v", err)
-	}
-	parameterCodec := runtime.NewParameterCodec(scheme)
-	req.VersionedParams(&corev1.PodExecOptions{
-		Container: container,
-		Command:   strings.Fields(command),
-		Stdin:     false,
-		Stdout:    true,
-		Stderr:    true,
-		TTY:       false,
-	}, parameterCodec)
-
-	exec, err := remotecommand.NewSPDYExecutor(f.KubeConfig, "POST", req.URL())
-	if err != nil {
-		return "", fmt.Errorf("error while creating Executor: %v", err)
-	}
-
-	var stdout, stderr bytes.Buffer
-	err = exec.Stream(remotecommand.StreamOptions{
-		Stdin:  nil,
-		Stdout: &stdout,
-		Stderr: &stderr,
-		Tty:    false,
-	})
-	if err != nil {
-		return "", fmt.Errorf("error in Stream: %v", err)
-	}
-
-	return stdout.String(), nil
-}
-
 func getConfigMap(name string, namespace string, f *framework.Framework) (map[string]string, error) {
 	configmap := &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
@@ -253,7 +211,7 @@ func getConfigMap(name string, namespace string, f *framework.Framework) (map[st
 	return configmap.Data, nil
 }
 
-func integreatlyTest(t *testing.T, f *framework.Framework, ctx *framework.TestCtx, products map[string]string, profile string) error {
+func integreatlyTest(t *testing.T, f *framework.Framework, ctx *framework.TestCtx, products map[string]string, IsSelfManaged bool) error {
 	namespace, err := ctx.GetNamespace()
 	if err != nil {
 		return fmt.Errorf("could not get namespace: %deploymentName", err)
@@ -329,7 +287,7 @@ func integreatlyTest(t *testing.T, f *framework.Framework, ctx *framework.TestCt
 	// check namespaces labelled correctly
 	expectedNamespaces := []string{}
 
-	if profile == managed {
+	if !IsSelfManaged {
 		expectedNamespaces = []string{
 			"3scale",
 			"3scale-operator",
@@ -350,7 +308,7 @@ func integreatlyTest(t *testing.T, f *framework.Framework, ctx *framework.TestCt
 			"user-sso",
 			"user-sso-operator",
 		}
-	} else if profile == selfManaged {
+	} else {
 		expectedNamespaces = []string{
 			"middleware-monitoring-operator",
 			"rhsso",
@@ -397,7 +355,7 @@ func integreatlyTest(t *testing.T, f *framework.Framework, ctx *framework.TestCt
 	}
 
 	// check products stage operator versions
-	productOperators := getProductOperators(profile)
+	productOperators := getProductOperators(IsSelfManaged)
 	err = checkOperatorVersions(t, f, namespace, integreatlyv1alpha1.ProductsStage, productOperators)
 	if err != nil {
 		return err
@@ -430,7 +388,7 @@ func integreatlyTest(t *testing.T, f *framework.Framework, ctx *framework.TestCt
 		return err
 	}
 
-	productOperands := getProductOperands(profile)
+	productOperands := getProductOperands(IsSelfManaged)
 	err = checkOperandVersions(t, f, namespace, integreatlyv1alpha1.ProductsStage, productOperands)
 	if err != nil {
 		return err
@@ -438,7 +396,7 @@ func integreatlyTest(t *testing.T, f *framework.Framework, ctx *framework.TestCt
 
 	// check no failed PVCs
 	var pvcNamespaces []string
-	if profile == managed {
+	if !IsSelfManaged {
 		pvcNamespaces = []string{
 			string(integreatlyv1alpha1.Product3Scale),
 			string(integreatlyv1alpha1.ProductFuse),
@@ -447,7 +405,7 @@ func integreatlyTest(t *testing.T, f *framework.Framework, ctx *framework.TestCt
 			string(integreatlyv1alpha1.ProductUps),
 			string(integreatlyv1alpha1.ProductRHSSOUser),
 		}
-	} else if profile == selfManaged {
+	} else {
 		pvcNamespaces = []string{
 			string(integreatlyv1alpha1.ProductRHSSO),
 			string(integreatlyv1alpha1.ProductSolutionExplorer),
@@ -459,10 +417,10 @@ func integreatlyTest(t *testing.T, f *framework.Framework, ctx *framework.TestCt
 	return err
 }
 
-func getProductOperands(profile string) map[string]string {
+func getProductOperands(isSelfManaged bool) map[string]string {
 	// check products stage operands versions
 	productOperands := map[string]string{}
-	if profile == managed {
+	if !isSelfManaged {
 		productOperands = map[string]string{
 			string(integreatlyv1alpha1.Product3Scale):              string(integreatlyv1alpha1.Version3Scale),
 			string(integreatlyv1alpha1.ProductAMQOnline):           string(integreatlyv1alpha1.VersionAMQOnline),
@@ -472,7 +430,7 @@ func getProductOperands(profile string) map[string]string {
 			string(integreatlyv1alpha1.ProductUps):                 string(integreatlyv1alpha1.VersionUps),
 			string(integreatlyv1alpha1.ProductRHSSOUser):           string(integreatlyv1alpha1.VersionRHSSOUser),
 		}
-	} else if profile == selfManaged {
+	} else {
 		productOperands = map[string]string{
 			string(integreatlyv1alpha1.ProductUps):       string(integreatlyv1alpha1.VersionUps),
 			string(integreatlyv1alpha1.ProductRHSSOUser): string(integreatlyv1alpha1.VersionRHSSOUser),
@@ -481,9 +439,9 @@ func getProductOperands(profile string) map[string]string {
 	return productOperands
 }
 
-func getProductOperators(profile string) map[string]string {
+func getProductOperators(isSelfManaged bool) map[string]string {
 	productOperators := map[string]string{}
-	if profile == managed {
+	if !isSelfManaged {
 		productOperators = map[string]string{
 			string(integreatlyv1alpha1.Product3Scale):              string(integreatlyv1alpha1.OperatorVersion3Scale),
 			string(integreatlyv1alpha1.ProductAMQOnline):           string(integreatlyv1alpha1.OperatorVersionAMQOnline),
@@ -493,7 +451,7 @@ func getProductOperators(profile string) map[string]string {
 			string(integreatlyv1alpha1.ProductUps):                 string(integreatlyv1alpha1.OperatorVersionUPS),
 			string(integreatlyv1alpha1.ProductRHSSOUser):           string(integreatlyv1alpha1.OperatorVersionRHSSOUser),
 		}
-	} else if profile == selfManaged {
+	} else {
 		productOperators = map[string]string{
 			string(integreatlyv1alpha1.ProductUps):       string(integreatlyv1alpha1.OperatorVersionUPS),
 			string(integreatlyv1alpha1.ProductRHSSOUser): string(integreatlyv1alpha1.OperatorVersionRHSSOUser),
@@ -599,7 +557,7 @@ func waitForInstallationStageCompletion(t *testing.T, f *framework.Framework, na
 	return nil
 }
 
-func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.TestCtx, profile string) {
+func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.TestCtx) {
 	namespace, err := ctx.GetNamespace()
 	// Create SMTP Secret
 	installationPrefix, found := os.LookupEnv("INSTALLATION_PREFIX")
@@ -690,9 +648,12 @@ func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.Tes
 	}
 	//TODO: split them into their own test cases
 	// check that all of the operators deploy and all of the installation phases complete
-	profile = profileCheck(*environment)
+	isSelfManaged, err := common.IsSelfManaged(f.Client.Client)
+	if err != nil {
+		t.Fatal("error getting isSelfManaged:", err)
+	}
 
-	if profile ==  managed {
+	if !isSelfManaged {
 		//Product Stage - verify operators deploy
 		products := map[string]string{
 			"3scale":               "3scale-operator",
@@ -703,30 +664,19 @@ func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.Tes
 			"ups":                  "unifiedpush-operator",
 			"apicurito":            "apicurito-operator",
 		}
-		if err = integreatlyTest(t, f, ctx, products, profile); err != nil {
+		if err = integreatlyTest(t, f, ctx, products, isSelfManaged); err != nil {
 			t.Fatal(err)
 		}
-	} else if profile == selfManaged {
+	} else {
 		//Product Stage - verify operators deploy
 		products := map[string]string{
 			"amqstreams": "strimzi-cluster-operator",
 			"user-sso":   "keycloak-operator",
 			"ups":        "unifiedpush-operator",
 		}
-		if err = integreatlyTest(t, f, ctx, products, profile); err != nil {
+		if err = integreatlyTest(t, f, ctx, products, isSelfManaged); err != nil {
 			t.Fatal(err)
 		}
 	}
 
-}
-
-func profileCheck(profile string) string {
-	spl := strings.Split(profile, "-")
-	if spl[0] == "self" {
-		return selfManaged
-	} else if spl[0] == managed {
-		return managed
-	}
-
-	return managed
 }
