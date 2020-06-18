@@ -49,6 +49,7 @@ var (
 		{"A06 - Verify PVC", TestPVClaims},
 		{"Verify servicemonitors are cloned in monitoring namespace and rolebindings are created", TestServiceMonitorsCloneAndRolebindingsExist},
 		{"C03 - Verify that alerting mechanism works", TestIntegreatlyAlertsMechanism},
+		{"Test ApicurioRegistry API", TestApicurioRegistryAPI},
 	}
 
 	DESTRUCTIVE_TESTS = []TestCase{

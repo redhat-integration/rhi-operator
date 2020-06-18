@@ -506,7 +506,7 @@ github.com/operator-framework/operator-registry/pkg/lib/bundle
 github.com/operator-framework/operator-registry/pkg/registry
 github.com/operator-framework/operator-registry/pkg/sqlite
 github.com/operator-framework/operator-registry/pkg/sqlite/migrations
-# github.com/operator-framework/operator-sdk v0.15.2
+# github.com/operator-framework/operator-sdk v0.17.0 => github.com/operator-framework/operator-sdk v0.15.1
 github.com/operator-framework/operator-sdk/cmd/operator-sdk
 github.com/operator-framework/operator-sdk/cmd/operator-sdk/add
 github.com/operator-framework/operator-sdk/cmd/operator-sdk/alpha
