@@ -23,9 +23,7 @@ import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/apimachinery/pkg/util/wait"
-	k8sclient "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
@@ -92,15 +90,21 @@ func TestIntegreatly(t *testing.T) {
 			})
 		}
 
+		var err error
 		t.Run("Cluster", func(t *testing.T) {
-			IntegreatlyCluster(t, f, ctx)
+			err = IntegreatlyCluster(t, f, ctx)
+			if err != nil {
+				t.Log(err)
+				t.Fail()
+			}
 		})
 
-		for _, test := range common.HAPPY_PATH_TESTS{
+		for _, test := range common.HAPPY_PATH_TESTS {
 			t.Run(test.Description, func(t *testing.T) {
 				testingContext, err = common.NewTestingContext(f.KubeConfig)
 				if err != nil {
-					t.Fatal("failed to create testing context", err)
+					t.Log("cluster not in a testable state, quiting test run")
+			    t.FailNow()
 				}
 				test.Test(t, testingContext)
 			})
@@ -284,7 +288,6 @@ func integreatlyTest(t *testing.T, f *framework.Framework, ctx *framework.TestCt
 		return err
 	}
 
-	// check namespaces labelled correctly
 	expectedNamespaces := []string{}
 
 	if !IsSelfManaged {
@@ -557,38 +560,13 @@ func waitForInstallationStageCompletion(t *testing.T, f *framework.Framework, na
 	return nil
 }
 
-func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.TestCtx) {
+func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.TestCtx) error {
 	namespace, err := ctx.GetNamespace()
 	// Create SMTP Secret
 	installationPrefix, found := os.LookupEnv("INSTALLATION_PREFIX")
 	if !found {
-		t.Fatal("INSTALLATION_PREFIX env var is not set")
-	}
-
-	var service = &corev1.Service{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      "rhmi-webhooks",
-			Namespace: namespace,
-			Annotations: map[string]string{
-				"service.beta.openshift.io/serving-cert-secret-name": "rhmi-webhook-cert",
-			},
-		},
-		Spec: corev1.ServiceSpec{
-			Selector: map[string]string{
-				"name": "rhmi-operator",
-			},
-			Ports: []corev1.ServicePort{
-				{
-					Protocol:   corev1.ProtocolTCP,
-					Port:       443,
-					TargetPort: intstr.FromInt(8090),
-				},
-			},
-		},
-	}
-	err = f.Client.Create(context.TODO(), service, &framework.CleanupOptions{TestContext: ctx, Timeout: cleanupTimeout, RetryInterval: cleanupRetryInterval})
-	if err != nil && !apierrors.IsAlreadyExists(err) {
-		t.Fatal(err)
+		err := fmt.Errorf("INSTALLATION_PREFIX env var is not set")
+		return err
 	}
 
 	var smtpSec = &corev1.Secret{
@@ -606,7 +584,7 @@ func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.Tes
 	}
 	err = f.Client.Create(context.TODO(), smtpSec, &framework.CleanupOptions{TestContext: ctx, Timeout: cleanupTimeout, RetryInterval: cleanupRetryInterval})
 	if err != nil && !apierrors.IsAlreadyExists(err) {
-		t.Fatal(err)
+		return fmt.Errorf("create SMTP Secret: %w", err)
 	}
 
 	// create pagerduty secret
@@ -622,7 +600,7 @@ func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.Tes
 	}
 	err = f.Client.Create(context.TODO(), pagerdutySecret, &framework.CleanupOptions{TestContext: ctx, Timeout: cleanupTimeout, RetryInterval: cleanupRetryInterval})
 	if err != nil && !apierrors.IsAlreadyExists(err) {
-		t.Fatal(err)
+		return fmt.Errorf("create pagerduty secret: %w", err)
 	}
 
 	// create dead mans snitch secret
@@ -638,16 +616,18 @@ func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.Tes
 	}
 	err = f.Client.Create(context.TODO(), dmsSecret, &framework.CleanupOptions{TestContext: ctx, Timeout: cleanupTimeout, RetryInterval: cleanupRetryInterval})
 	if err != nil && !apierrors.IsAlreadyExists(err) {
-		t.Fatal(err)
+		return fmt.Errorf("create dead mans snitch secret : %w", err)
 	}
 
 	// wait for integreatly-operator to be ready
 	err = e2eutil.WaitForOperatorDeployment(t, f.KubeClient, namespace, "rhmi-operator", 1, retryInterval, timeout)
 	if err != nil {
-		t.Fatal(err)
+		return fmt.Errorf("wait for integreatly-operator to be ready: %w", err)
+
 	}
 	//TODO: split them into their own test cases
 	// check that all of the operators deploy and all of the installation phases complete
+
 	isSelfManaged, err := common.IsSelfManaged(f.Client.Client)
 	if err != nil {
 		t.Fatal("error getting isSelfManaged:", err)
