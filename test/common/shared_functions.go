@@ -221,7 +221,6 @@ func WriteRHMICRToFile(client dynclient.Client, file string) error {
 	}
 }
 
-
 func IsSelfManaged(client dynclient.Client) (bool, error) {
 	rhmi := &integreatlyv1alpha1.RHMI{}
 	// get the RHMI custom resource to check what storage type is being used

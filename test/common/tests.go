@@ -4,7 +4,6 @@ package common
 // 1. https://gitlab.cee.redhat.com/integreatly-qe/integreatly-test-cases#how-to-automate-a-test-case-and-link-it-back
 // 2. https://gitlab.cee.redhat.com/integreatly-qe/integreatly-test-cases
 var (
-
 	ALL_TESTS = []TestCase{
 		// Add all tests that can be executed prior to a completed installation here
 		{"Verify RHMI CRD Exists", TestIntegreatlyCRDExists},
@@ -50,14 +49,12 @@ var (
 	}
 
 	MANAGED_PRODUCT_TESTS = []TestCase{
-			{"B05 - Verify Codeready CRUDL permissions", TestCodereadyCrudlPermisssions},
-			{"F05 - Verify Replicas Scale correctly in Threescale", TestReplicasInThreescale},
-			{"F06 - Verify Replicas Scale correctly in Apicurito", TestReplicasInApicurito},
+		{"B05 - Verify Codeready CRUDL permissions", TestCodereadyCrudlPermisssions},
+		{"F05 - Verify Replicas Scale correctly in Threescale", TestReplicasInThreescale},
+		{"F06 - Verify Replicas Scale correctly in Apicurito", TestReplicasInApicurito},
 	}
 
-	SELF_MANAGED_PRODUCT_TESTS = []TestCase{
-
-	}
+	SELF_MANAGED_PRODUCT_TESTS = []TestCase{}
 
 	DESTRUCTIVE_TESTS = []TestCase{
 		// Add all destructive tests here that should not be executed as part of the happy path tests

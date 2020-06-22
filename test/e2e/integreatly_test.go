@@ -104,7 +104,7 @@ func TestIntegreatly(t *testing.T) {
 				testingContext, err = common.NewTestingContext(f.KubeConfig)
 				if err != nil {
 					t.Log("cluster not in a testable state, quiting test run")
-			    t.FailNow()
+					t.FailNow()
 				}
 				test.Test(t, testingContext)
 			})
@@ -127,14 +127,14 @@ func TestIntegreatly(t *testing.T) {
 			}
 		} else {
 			for _, test := range common.SELF_MANAGED_PRODUCT_TESTS {
-			t.Run(test.Description, func(t *testing.T) {
-				testingContext, err = common.NewTestingContext(f.KubeConfig)
-				if err != nil {
-					t.Fatal("failed to create testing context", err)
-				}
-				test.Test(t, testingContext)
-			})
-		}
+				t.Run(test.Description, func(t *testing.T) {
+					testingContext, err = common.NewTestingContext(f.KubeConfig)
+					if err != nil {
+						t.Fatal("failed to create testing context", err)
+					}
+					test.Test(t, testingContext)
+				})
+			}
 
 		}
 
