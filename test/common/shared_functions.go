@@ -221,6 +221,20 @@ func WriteRHMICRToFile(client dynclient.Client, file string) error {
 	}
 }
 
+func IsSelfManaged(client dynclient.Client) (bool, error) {
+	rhmi := &integreatlyv1alpha1.RHMI{}
+	// get the RHMI custom resource to check what storage type is being used
+	err := client.Get(goctx.TODO(), types.NamespacedName{Name: InstallationName, Namespace: RHMIOperatorNamespace}, rhmi)
+	if err != nil {
+		return true, fmt.Errorf("error getting RHMI CR: %v", err)
+	}
+
+	if rhmi.Spec.Type == "self-managed" {
+		return true, nil
+	}
+	return false, nil
+}
+
 // Common function to perform CRUDL and verifying their expected permissions
 func verifyCRUDLPermissions(t *testing.T, openshiftClient *resources.OpenshiftClient, expectedPermission ExpectedPermissions) {
 	// Perform LIST Request
