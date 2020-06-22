@@ -658,5 +658,5 @@ func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.Tes
 			t.Fatal(err)
 		}
 	}
-
+	return nil
 }
