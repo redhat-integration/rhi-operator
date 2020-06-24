@@ -146,6 +146,7 @@ var (
 		{
 			Name: integreatlyv1alpha1.SolutionExplorerStage,
 			Products: map[integreatlyv1alpha1.ProductName]integreatlyv1alpha1.RHMIProductStatus{
+				integreatlyv1alpha1.ProductApicurioRegistry: {Name: integreatlyv1alpha1.ProductApicurioRegistry},
 				integreatlyv1alpha1.ProductSolutionExplorer: {Name: integreatlyv1alpha1.ProductSolutionExplorer},
 			},
 		},

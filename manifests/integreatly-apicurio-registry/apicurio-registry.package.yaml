@@ -1,0 +1,4 @@
+packageName: rhmi-apicurio-registry
+channels:
+  - name: rhmi
+    currentCSV: apicurio-registry.v1.0.0
