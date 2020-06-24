@@ -41,7 +41,7 @@ else
 endif
 
 export SELF_SIGNED_CERTS   ?= true
-export INSTALLATION_TYPE   ?= managed
+export INSTALLATION_TYPE   ?= self-managed
 export INSTALLATION_NAME   ?= rhmi
 export INSTALLATION_PREFIX ?= redhat-rhmi
 export USE_CLUSTER_STORAGE ?= true
