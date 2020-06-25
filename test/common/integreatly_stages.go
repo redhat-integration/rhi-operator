@@ -58,7 +58,7 @@ func TestIntegreatlyStagesStatus(t *testing.T, ctx *TestingContext) {
 			t.Fatal("error getting isSelfManaged:", err)
 		}
 		//Checking profile & updating products list
-		updateExpectedProduct(isSelfManaged)
+		expectedStageProducts = updateExpectedProduct(isSelfManaged)
 		//iterate stages and check their status
 		for stageName, productNames := range expectedStageProducts {
 			stage, ok := rhmi.Status.Stages[v1alpha1.StageName(stageName)]
@@ -106,8 +106,8 @@ func TestIntegreatlyStagesStatus(t *testing.T, ctx *TestingContext) {
 	}
 }
 
-func updateExpectedProduct(isSelfManaged bool) {
-	if !isSelfManaged {
+func updateExpectedProduct(isSelfManaged bool) map[string][]string {
+	if isSelfManaged {
 		expectedStageProducts = map[string][]string{
 			"authentication": {
 				"rhsso",
@@ -133,6 +133,8 @@ func updateExpectedProduct(isSelfManaged bool) {
 			},
 		}
 	}
+
+	return expectedStageProducts
 }
 
 func checkStageStatus(stage v1alpha1.RHMIStageStatus) string {
