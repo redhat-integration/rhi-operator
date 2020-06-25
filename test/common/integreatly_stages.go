@@ -53,6 +53,12 @@ func TestIntegreatlyStagesStatus(t *testing.T, ctx *TestingContext) {
 			return false, fmt.Errorf("error getting RHMI CR: %v", err)
 		}
 
+		isSelfManaged, err := IsSelfManaged(ctx.Client)
+		if err != nil {
+			t.Fatal("error getting isSelfManaged:", err)
+		}
+		//Checking profile & updating products list
+		updateExpectedProduct(isSelfManaged)
 		//iterate stages and check their status
 		for stageName, productNames := range expectedStageProducts {
 			stage, ok := rhmi.Status.Stages[v1alpha1.StageName(stageName)]
@@ -97,6 +103,35 @@ func TestIntegreatlyStagesStatus(t *testing.T, ctx *TestingContext) {
 
 	if err != nil {
 		t.Error(err)
+	}
+}
+
+func updateExpectedProduct(isSelfManaged bool) {
+	if !isSelfManaged {
+		expectedStageProducts = map[string][]string{
+			"authentication": {
+				"rhsso",
+			},
+
+			"bootstrap": {},
+
+			"cloud-resources": {
+				"cloud-resources",
+			},
+
+			"monitoring": {
+				"middleware-monitoring",
+			},
+
+			"products": {
+				"amqstreams",
+			},
+
+			"solution-explorer": {
+				"solution-explorer",
+				"apicurito-registry",
+			},
+		}
 	}
 }
 
