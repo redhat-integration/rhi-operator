@@ -36,7 +36,6 @@ var (
 		{"F08 - Verify Replicas Scale correctly in RHSSO and user SSO", TestReplicasInRHSSOAndUserSSO},
 		{"A06 - Verify PVC", TestPVClaims},
 		{"Verify servicemonitors are cloned in monitoring namespace and rolebindings are created", TestServiceMonitorsCloneAndRolebindingsExist},
-
 	}
 
 	MANAGED_PRODUCT_TESTS = []TestCase{
