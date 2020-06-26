@@ -19,23 +19,17 @@ var (
 		{"A22 - Verify RHMI Config Updates CRO Strategy Override Config Map", TestRHMIConfigCROStrategyOverride},
 		{"B03 - Verify RHMI Developer User Permissions are Correct", TestRHMIDeveloperUserPermissions},
 		{"B04 - Verify Dedicated Admin User Permissions are Correct", TestDedicatedAdminUserPermissions},
-		{"A13 - Verify Deployment resources have the expected replicas", TestDeploymentExpectedReplicas},
-		{"A14 - Verify Deployment Config resources have the expected replicas", TestDeploymentConfigExpectedReplicas},
 		{"E02 - Verify that all dashboards are installed and all the graphs are filled with data", TestDashboardsData},
 		{"E03 - Verify dashboards exist", TestIntegreatlyDashboardsExist},
-		{"A10 - Verify CRO Postgres CRs Successful", TestCROPostgresSuccessfulState},
 		{"A11 - Verify CRO Redis CRs Successful", TestCRORedisSuccessfulState},
 		{"A12 - Verify CRO BlobStorage CRs Successful", TestCROBlobStorageSuccessfulState},
 		{"F02 - Verify PodDisruptionBudgets exist", TestIntegreatlyPodDisruptionBudgetsExist},
-		{"A08 - Verify all products routes are created", TestIntegreatlyRoutesExist},
 		{"E01 - Verify Grafana Route is accessible", TestGrafanaExternalRouteAccessible},
 		{"E05 - Verify Grafana Route returns dashboards", TestGrafanaExternalRouteDashboardExist},
 		{"B06 - Verify users with no email get default email", TestDefaultUserEmail},
 		{"Verify Network Policy allows cross NS access to SVC", TestNetworkPolicyAccessNSToSVC},
 		{"A16 - Custom first broker login flow", TestAuthDelayFirstBrokerLogin},
 		{"F08 - Verify Replicas Scale correctly in RHSSO and user SSO", TestReplicasInRHSSOAndUserSSO},
-		{"A06 - Verify PVC", TestPVClaims},
-		{"Verify servicemonitors are cloned in monitoring namespace and rolebindings are created", TestServiceMonitorsCloneAndRolebindingsExist},
 	}
 
 	MANAGED_PRODUCT_TESTS = []TestCase{
@@ -52,6 +46,12 @@ var (
 		{"C04 - Verify Alerts exist", TestIntegreatlyAlertsExist},
 		{"A15 - Verify Stateful Set resources have the expected replicas", TestStatefulSetsExpectedReplicas},
 		{"A09 - Verify Subscription Install Plan Strategy", TestSubscriptionInstallPlanType},
+		{"A08 - Verify all products routes are created", TestIntegreatlyRoutesExist},
+		{"A14 - Verify Deployment Config resources have the expected replicas", TestDeploymentConfigExpectedReplicas},
+		{"A13 - Verify Deployment resources have the expected replicas", TestDeploymentExpectedReplicas},
+		{"Verify servicemonitors are cloned in monitoring namespace and rolebindings are created", TestServiceMonitorsCloneAndRolebindingsExist},
+		{"A06 - Verify PVC", TestPVClaims},
+		{"A10 - Verify CRO Postgres CRs Successful", TestCROPostgresSuccessfulState},
 	}
 
 	SELF_MANAGED_PRODUCT_TESTS = []TestCase{
