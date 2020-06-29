@@ -16,12 +16,10 @@ var (
 		{"Test RHMI installation CR metric", TestRHMICRMetrics},
 		{"A03 - Verify all namespaces have been created with the correct name", TestNamespaceCreated},
 		{"A18 - Verify RHMI Config CRs Successful", TestRHMIConfigCRs},
-		{"B03 - Verify RHMI Developer User Permissions are Correct", TestRHMIDeveloperUserPermissions},
 		{"F02 - Verify PodDisruptionBudgets exist", TestIntegreatlyPodDisruptionBudgetsExist},
 		{"E01 - Verify Grafana Route is accessible", TestGrafanaExternalRouteAccessible},
 		{"E05 - Verify Grafana Route returns dashboards", TestGrafanaExternalRouteDashboardExist},
 		{"B06 - Verify users with no email get default email", TestDefaultUserEmail},
-		{"Verify Network Policy allows cross NS access to SVC", TestNetworkPolicyAccessNSToSVC},
 		{"F08 - Verify Replicas Scale correctly in RHSSO and user SSO", TestReplicasInRHSSOAndUserSSO},
 	}
 
@@ -42,6 +40,7 @@ var (
 		{"Verify servicemonitors are cloned in monitoring namespace and rolebindings are created", TestServiceMonitorsCloneAndRolebindingsExist},
 		{"Verify Alerts are not firing during or after installation apart from DeadMansSwitch", TestIntegreatlyAlertsFiring},
 		{"B04 - Verify Dedicated Admin User Permissions are Correct", TestDedicatedAdminUserPermissions},
+		{"B03 - Verify RHMI Developer User Permissions are Correct", TestRHMIDeveloperUserPermissions},
 		{"B05 - Verify Codeready CRUDL permissions", TestCodereadyCrudlPermisssions},
 		{"C01 - Verify Alerts are not pending or firing apart from DeadMansSwitch", TestIntegreatlyAlertsPendingOrFiring},
 		{"C03 - Verify that alerting mechanism works", TestIntegreatlyAlertsMechanism},
@@ -52,6 +51,7 @@ var (
 		{"F06 - Verify Replicas Scale correctly in Apicurito", TestReplicasInApicurito},
 		{"H03 - Verify 3scale CRUDL permissions", Test3ScaleCrudlPermissions},
 		{"H05 - Verify Fuse CRUDL permissions", TestFuseCrudlPermissions},
+		{"Verify Network Policy allows cross NS access to SVC", TestNetworkPolicyAccessNSToSVC},
 	}
 
 	SELF_MANAGED_PRODUCT_TESTS = []TestCase{
