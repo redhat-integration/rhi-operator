@@ -141,6 +141,7 @@ var (
 			Name: integreatlyv1alpha1.ProductsStage,
 			Products: map[integreatlyv1alpha1.ProductName]integreatlyv1alpha1.RHMIProductStatus{
 				integreatlyv1alpha1.ProductAMQStreams: {Name: integreatlyv1alpha1.ProductAMQStreams},
+				integreatlyv1alpha1.ProductRHSSOUser:           {Name: integreatlyv1alpha1.ProductRHSSOUser},
 			},
 		},
 		{
