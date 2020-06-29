@@ -55,7 +55,7 @@ var (
 	}
 
 	SELF_MANAGED_PRODUCT_TESTS = []TestCase{
-		{"Test ApicurioRegistry API", TestApicurioRegistryAPI},
+		//	{"Test ApicurioRegistry API", TestApicurioRegistryAPI},
 	}
 
 	DESTRUCTIVE_TESTS = []TestCase{

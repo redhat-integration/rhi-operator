@@ -127,16 +127,17 @@ func TestIntegreatly(t *testing.T) {
 				})
 			}
 		} else {
-			for _, test := range common.SELF_MANAGED_PRODUCT_TESTS {
-				t.Run(test.Description, func(t *testing.T) {
-					testingContext, err = common.NewTestingContext(f.KubeConfig)
-					if err != nil {
-						t.Fatal("failed to create testing context", err)
-					}
-					test.Test(t, testingContext)
-				})
+			if len(common.SELF_MANAGED_PRODUCT_TESTS) > 0 {
+				for _, test := range common.SELF_MANAGED_PRODUCT_TESTS {
+					t.Run(test.Description, func(t *testing.T) {
+						testingContext, err = common.NewTestingContext(f.KubeConfig)
+						if err != nil {
+							t.Fatal("failed to create testing context", err)
+						}
+						test.Test(t, testingContext)
+					})
+				}
 			}
-
 		}
 
 		// Do not execute these tests unless DESTRUCTIVE is set to true
