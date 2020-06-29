@@ -320,8 +320,6 @@ func integreatlyTest(t *testing.T, f *framework.Framework, ctx *framework.TestCt
 			"rhsso-operator",
 			"solution-explorer",
 			"solution-explorer-operator",
-			"ups",
-			"ups-operator",
 			"user-sso",
 			"user-sso-operator",
 		}
@@ -654,7 +652,6 @@ func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.Tes
 		products := map[string]string{
 			"amqstreams": "strimzi-cluster-operator",
 			"user-sso":   "keycloak-operator",
-			"ups":        "unifiedpush-operator",
 		}
 		if err = integreatlyTest(t, f, ctx, products, isSelfManaged); err != nil {
 			t.Fatal(err)

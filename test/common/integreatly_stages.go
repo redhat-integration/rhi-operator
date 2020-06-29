@@ -125,11 +125,11 @@ func updateExpectedProduct(isSelfManaged bool) map[string][]string {
 
 			"products": {
 				"amqstreams",
+				"rhssouser",
 			},
 
 			"solution-explorer": {
 				"solution-explorer",
-				"apicurito-registry",
 			},
 		}
 	}
