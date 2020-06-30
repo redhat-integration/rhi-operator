@@ -60,7 +60,7 @@ var (
 	VersionAMQOnline           ProductVersion = "1.4"
 	VersionApicurioRegistry    ProductVersion = "1.2.2.Final"
 	VersionApicurito           ProductVersion = "7.6"
-	VersionAMQStreams          ProductVersion = "1.1.0"
+	VersionAMQStreams          ProductVersion = "1.5.0"
 	VersionCodeReadyWorkspaces ProductVersion = "2.1.1"
 	VersionFuseOnOpenshift     ProductVersion = "7.6"
 	VersionMonitoring          ProductVersion = "1.1.6"
@@ -87,7 +87,7 @@ var (
 	PreflightFail       PreflightStatus = "failed"
 
 	// Operator image tags
-	OperatorVersionAMQStreams          OperatorVersion = "1.1.0"
+	OperatorVersionAMQStreams          OperatorVersion = "1.5.0"
 	OperatorVersionAMQOnline           OperatorVersion = "1.4"
 	OperatorVersionMonitoring          OperatorVersion = "1.1.5"
 	OperatorVersionSolutionExplorer    OperatorVersion = "0.0.58"
