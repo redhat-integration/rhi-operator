@@ -650,7 +650,7 @@ func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.Tes
 	} else {
 		//Product Stage - verify operators deploy
 		products := map[string]string{
-			"amqstreams": "strimzi-cluster-operator",
+			"amqstreams": "amq-streams-cluster-operator",
 			"user-sso":   "keycloak-operator",
 		}
 		if err = integreatlyTest(t, f, ctx, products, isSelfManaged); err != nil {
