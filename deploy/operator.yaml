@@ -11,6 +11,11 @@ spec:
     metadata:
       labels:
         name: rhmi-operator
+        com.redhat.product-name: Red_Hat_Integration
+        com.redhat.product-version: ""
+        com.redhat.component-name: rhi-operator
+        com.redhat.component-version: ""
+        com.redhat.component-type: infrastructure
     spec:
       serviceAccountName: rhmi-operator
       volumes:
