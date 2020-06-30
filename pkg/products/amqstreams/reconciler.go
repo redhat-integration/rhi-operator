@@ -175,8 +175,7 @@ func (r *Reconciler) handleCreatingComponents(ctx context.Context, client k8scli
 
 		kafka.Name = ClusterName
 		kafka.Namespace = r.Config.GetNamespace()
-
-		kafka.Spec.Kafka.Version = "2.1.1"
+		kafka.Spec.Kafka.Version = "2.5.0"
 		if kafka.Spec.Kafka.Replicas < kafkaReplicas {
 			kafka.Spec.Kafka.Replicas = kafkaReplicas
 		}
@@ -187,7 +186,7 @@ func (r *Reconciler) handleCreatingComponents(ctx context.Context, client k8scli
 		kafka.Spec.Kafka.Config.OffsetsTopicReplicationFactor = offsetsTopicReplicationFactor
 		kafka.Spec.Kafka.Config.TransactionStateLogReplicationFactor = transactionStateLogReplicationFactor
 		kafka.Spec.Kafka.Config.TransactionStateLogMinIsr = "2"
-		kafka.Spec.Kafka.Config.LogMessageFormatVersion = "2.1"
+		kafka.Spec.Kafka.Config.LogMessageFormatVersion = "2.5"
 		kafka.Spec.Kafka.Storage.Type = "persistent-claim"
 		kafka.Spec.Kafka.Storage.Size = "10Gi"
 		kafka.Spec.Kafka.Storage.DeleteClaim = false
