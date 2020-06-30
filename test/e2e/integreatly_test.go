@@ -322,6 +322,7 @@ func integreatlyTest(t *testing.T, f *framework.Framework, ctx *framework.TestCt
 			"solution-explorer-operator",
 			"user-sso",
 			"user-sso-operator",
+			"amq-streams",
 		}
 	}
 
@@ -412,8 +413,6 @@ func integreatlyTest(t *testing.T, f *framework.Framework, ctx *framework.TestCt
 		pvcNamespaces = []string{
 			string(integreatlyv1alpha1.ProductRHSSO),
 			string(integreatlyv1alpha1.ProductSolutionExplorer),
-			string(integreatlyv1alpha1.ProductUps),
-			string(integreatlyv1alpha1.ProductRHSSOUser),
 		}
 	}
 	err = checkPvcs(t, f, namespace, pvcNamespaces)
@@ -435,8 +434,8 @@ func getProductOperands(isSelfManaged bool) map[string]string {
 		}
 	} else {
 		productOperands = map[string]string{
-			string(integreatlyv1alpha1.ProductUps):       string(integreatlyv1alpha1.VersionUps),
-			string(integreatlyv1alpha1.ProductRHSSOUser): string(integreatlyv1alpha1.VersionRHSSOUser),
+			string(integreatlyv1alpha1.ProductAMQStreams): string(integreatlyv1alpha1.ProductAMQStreams),
+			string(integreatlyv1alpha1.ProductRHSSOUser):  string(integreatlyv1alpha1.VersionRHSSOUser),
 		}
 	}
 	return productOperands
@@ -456,8 +455,8 @@ func getProductOperators(isSelfManaged bool) map[string]string {
 		}
 	} else {
 		productOperators = map[string]string{
-			string(integreatlyv1alpha1.ProductUps):       string(integreatlyv1alpha1.OperatorVersionUPS),
-			string(integreatlyv1alpha1.ProductRHSSOUser): string(integreatlyv1alpha1.OperatorVersionRHSSOUser),
+			string(integreatlyv1alpha1.ProductRHSSOUser):  string(integreatlyv1alpha1.OperatorVersionRHSSOUser),
+			string(integreatlyv1alpha1.ProductAMQStreams): string(integreatlyv1alpha1.ProductAMQStreams),
 		}
 	}
 	return productOperators
@@ -650,8 +649,8 @@ func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.Tes
 	} else {
 		//Product Stage - verify operators deploy
 		products := map[string]string{
-			"amqstreams": "amq-streams-cluster-operator",
-			"user-sso":   "keycloak-operator",
+			"amq-streams": "amq-streams-cluster-operator",
+			"user-sso":    "keycloak-operator",
 		}
 		if err = integreatlyTest(t, f, ctx, products, isSelfManaged); err != nil {
 			t.Fatal(err)
