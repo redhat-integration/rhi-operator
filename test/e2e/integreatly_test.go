@@ -434,8 +434,7 @@ func getProductOperands(isSelfManaged bool) map[string]string {
 		}
 	} else {
 		productOperands = map[string]string{
-			string(integreatlyv1alpha1.ProductAMQStreams): string(integreatlyv1alpha1.ProductAMQStreams),
-			string(integreatlyv1alpha1.ProductRHSSOUser):  string(integreatlyv1alpha1.VersionRHSSOUser),
+			string(integreatlyv1alpha1.ProductRHSSOUser): string(integreatlyv1alpha1.VersionRHSSOUser),
 		}
 	}
 	return productOperands
@@ -455,8 +454,7 @@ func getProductOperators(isSelfManaged bool) map[string]string {
 		}
 	} else {
 		productOperators = map[string]string{
-			string(integreatlyv1alpha1.ProductRHSSOUser):  string(integreatlyv1alpha1.OperatorVersionRHSSOUser),
-			string(integreatlyv1alpha1.ProductAMQStreams): string(integreatlyv1alpha1.ProductAMQStreams),
+			string(integreatlyv1alpha1.ProductRHSSOUser): string(integreatlyv1alpha1.OperatorVersionRHSSOUser),
 		}
 	}
 	return productOperators
@@ -649,8 +647,8 @@ func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.Tes
 	} else {
 		//Product Stage - verify operators deploy
 		products := map[string]string{
-			"amq-streams": "amq-streams-cluster-operator",
-			"user-sso":    "keycloak-operator",
+			//"amq-streams": "amq-streams-cluster-operator",
+			"user-sso": "keycloak-operator",
 		}
 		if err = integreatlyTest(t, f, ctx, products, isSelfManaged); err != nil {
 			t.Fatal(err)
