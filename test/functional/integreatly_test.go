@@ -33,22 +33,16 @@ func TestIntegreatly(t *testing.T) {
 			})
 		}
 
-		isSelfManaged, err := common.IsSelfManaged(f.Client.Client)
-		if err != nil {
-			t.Fatal("error getting isSelfManaged:", err)
+		for _, test := range FUNCTIONAL_TESTS {
+			t.Run(test.Description, func(t *testing.T) {
+				testingContext, err := common.NewTestingContext(config)
+				if err != nil {
+					t.Fatal("failed to create testing context", err)
+				}
+				test.Test(t, testingContext)
+			})
 		}
 
-		if !isSelfManaged {
-			for _, test := range FUNCTIONAL_TESTS {
-				t.Run(test.Description, func(t *testing.T) {
-					testingContext, err := common.NewTestingContext(config)
-					if err != nil {
-						t.Fatal("failed to create testing context", err)
-					}
-					test.Test(t, testingContext)
-				})
-			}
-		}
 	})
 
 	t.Run("Integreatly Destructive Tests", func(t *testing.T) {
