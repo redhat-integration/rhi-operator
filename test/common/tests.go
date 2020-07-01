@@ -20,7 +20,7 @@ var (
 		{"E01 - Verify Grafana Route is accessible", TestGrafanaExternalRouteAccessible},
 		{"E05 - Verify Grafana Route returns dashboards", TestGrafanaExternalRouteDashboardExist},
 		{"B06 - Verify users with no email get default email", TestDefaultUserEmail},
-		{"F08 - Verify Replicas Scale correctly in RHSSO and user SSO", TestReplicasInRHSSOAndUserSSO},
+		//{"F08 - Verify Replicas Scale correctly in RHSSO and user SSO", TestReplicasInRHSSOAndUserSSO},
 	}
 
 	MANAGED_PRODUCT_TESTS = []TestCase{
