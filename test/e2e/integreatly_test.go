@@ -101,6 +101,11 @@ func TestIntegreatly(t *testing.T) {
 		})
 
 		for _, test := range common.HAPPY_PATH_TESTS {
+			if f.LocalOperator && test.Description == "Test RHMI installation CR metric" {
+				t.Log("Operator is running locally; skip the test" + test.Description)
+				continue
+			}
+
 			t.Run(test.Description, func(t *testing.T) {
 				testingContext, err = common.NewTestingContext(f.KubeConfig)
 				if err != nil {
