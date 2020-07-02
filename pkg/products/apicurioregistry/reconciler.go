@@ -15,6 +15,7 @@ import (
 	"github.com/integr8ly/integreatly-operator/pkg/resources/events"
 	"github.com/integr8ly/integreatly-operator/pkg/resources/marketplace"
 	"github.com/integr8ly/integreatly-operator/pkg/resources/owner"
+	"github.com/integr8ly/integreatly-operator/version"
 	appsv1 "github.com/openshift/api/apps/v1"
 	"github.com/sirupsen/logrus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -83,6 +84,14 @@ func (r *Reconciler) GetPreflightObject(ns string) runtime.Object {
 			Namespace: ns,
 		},
 	}
+}
+
+func (r *Reconciler) VerifyVersion(installation *integreatlyv1alpha1.RHMI) bool {
+	return version.VerifyProductAndOperatorVersion(
+		installation.Status.Stages[integreatlyv1alpha1.SolutionExplorerStage].Products[integreatlyv1alpha1.ProductApicurioRegistry],
+		string(integreatlyv1alpha1.VersionApicurioRegistry),
+		string(integreatlyv1alpha1.OperatorVersionApicurioRegistry),
+	)
 }
 
 // Reconcile changes the current state to match the desired state.
