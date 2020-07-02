@@ -282,8 +282,8 @@ func (r *Reconciler) reconcileSubscription(ctx context.Context, serverClient k8s
 		Namespace: operatorNamespace,
 		Channel:   marketplace.IntegreatlyChannel,
 	}
-	catalogSourceReconciler := marketplace.NewConfigMapCatalogSourceReconciler(
-		manifestPackage,
+	catalogSourceReconciler := marketplace.NewGRPCImageCatalogSourceReconciler(
+		"TODO: path to operator/product index image",
 		serverClient,
 		operatorNamespace,
 		marketplace.CatalogSourceName,
