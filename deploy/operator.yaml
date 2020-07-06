@@ -50,3 +50,5 @@ spec:
               value: "true"
             - name: AUTO_INSTALL_AT_STARTUP
               value: "false"
+            - name: RELATED_IMAGE_AMQ_STREAMS_INDEX_IMAGE
+              value: "quay.io/redhat-integration/rhi-operator:index-image-master"

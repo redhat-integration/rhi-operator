@@ -306,6 +306,8 @@ spec:
                   value: rhmi-operator
                 - name: USE_CLUSTER_STORAGE
                   value: "true"
+                - name: RELATED_IMAGE_AMQ_STREAMS_INDEX_IMAGE
+                  value: "quay.io/redhat-integration/rhi-operator:index-image-master"
                 image: quay.io/integreatly/integreatly-operator:v2.4.0
                 imagePullPolicy: Always
                 name: rhmi-operator
