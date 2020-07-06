@@ -33,6 +33,13 @@ var (
 )
 
 func TestNamespaceCreated(t *testing.T, ctx *TestingContext) {
+
+	isSelfManaged, err := IsSelfManaged(ctx.Client)
+	if err != nil {
+		t.Fatal("error getting isSelfManaged:", err)
+	}
+
+	namespacesCreated = updateNameSpaceBasedonProfile(isSelfManaged)
 	for _, namespace := range namespacesCreated {
 		ns := &corev1.Namespace{}
 		err := ctx.Client.Get(goctx.TODO(), k8sclient.ObjectKey{Name: namespace}, ns)
@@ -42,4 +49,23 @@ func TestNamespaceCreated(t *testing.T, ctx *TestingContext) {
 			continue
 		}
 	}
+}
+
+func updateNameSpaceBasedonProfile(isSelfManaged bool) []string {
+	if isSelfManaged {
+		namespacesCreated = []string{
+			MonitoringOperatorNamespace,
+			MonitoringFederateNamespace,
+			CloudResourceOperatorNamespace,
+			RHSSOUserProductOperatorNamespace,
+			RHSSOUserOperatorNamespace,
+			RHSSOProductNamespace,
+			RHSSOOperatorNamespace,
+			SolutionExplorerProductNamespace,
+			SolutionExplorerOperatorNamespace,
+			ApicurioRegistryOperatorNamespace,
+			amqstreamsNamespace,
+		}
+	}
+	return namespacesCreated
 }

@@ -32,6 +32,7 @@ func TestIntegreatly(t *testing.T) {
 				test.Test(t, testingContext)
 			})
 		}
+
 		for _, test := range FUNCTIONAL_TESTS {
 			t.Run(test.Description, func(t *testing.T) {
 				testingContext, err := common.NewTestingContext(config)
@@ -41,6 +42,7 @@ func TestIntegreatly(t *testing.T) {
 				test.Test(t, testingContext)
 			})
 		}
+
 	})
 
 	t.Run("Integreatly Destructive Tests", func(t *testing.T) {

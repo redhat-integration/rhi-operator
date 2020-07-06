@@ -101,6 +101,11 @@ func TestIntegreatly(t *testing.T) {
 		})
 
 		for _, test := range common.HAPPY_PATH_TESTS {
+			if f.LocalOperator && test.Description == "Test RHMI installation CR metric" {
+				t.Log("Operator is running locally; skip the test" + test.Description)
+				continue
+			}
+
 			t.Run(test.Description, func(t *testing.T) {
 				testingContext, err = common.NewTestingContext(f.KubeConfig)
 				if err != nil {
@@ -127,16 +132,17 @@ func TestIntegreatly(t *testing.T) {
 				})
 			}
 		} else {
-			for _, test := range common.SELF_MANAGED_PRODUCT_TESTS {
-				t.Run(test.Description, func(t *testing.T) {
-					testingContext, err = common.NewTestingContext(f.KubeConfig)
-					if err != nil {
-						t.Fatal("failed to create testing context", err)
-					}
-					test.Test(t, testingContext)
-				})
+			if len(common.SELF_MANAGED_PRODUCT_TESTS) > 0 {
+				for _, test := range common.SELF_MANAGED_PRODUCT_TESTS {
+					t.Run(test.Description, func(t *testing.T) {
+						testingContext, err = common.NewTestingContext(f.KubeConfig)
+						if err != nil {
+							t.Fatal("failed to create testing context", err)
+						}
+						test.Test(t, testingContext)
+					})
+				}
 			}
-
 		}
 
 		// Do not execute these tests unless DESTRUCTIVE is set to true
@@ -319,10 +325,9 @@ func integreatlyTest(t *testing.T, f *framework.Framework, ctx *framework.TestCt
 			"rhsso-operator",
 			"solution-explorer",
 			"solution-explorer-operator",
-			"ups",
-			"ups-operator",
 			"user-sso",
 			"user-sso-operator",
+			"amq-streams",
 		}
 	}
 
@@ -413,8 +418,6 @@ func integreatlyTest(t *testing.T, f *framework.Framework, ctx *framework.TestCt
 		pvcNamespaces = []string{
 			string(integreatlyv1alpha1.ProductRHSSO),
 			string(integreatlyv1alpha1.ProductSolutionExplorer),
-			string(integreatlyv1alpha1.ProductUps),
-			string(integreatlyv1alpha1.ProductRHSSOUser),
 		}
 	}
 	err = checkPvcs(t, f, namespace, pvcNamespaces)
@@ -436,7 +439,6 @@ func getProductOperands(isSelfManaged bool) map[string]string {
 		}
 	} else {
 		productOperands = map[string]string{
-			string(integreatlyv1alpha1.ProductUps):       string(integreatlyv1alpha1.VersionUps),
 			string(integreatlyv1alpha1.ProductRHSSOUser): string(integreatlyv1alpha1.VersionRHSSOUser),
 		}
 	}
@@ -457,7 +459,6 @@ func getProductOperators(isSelfManaged bool) map[string]string {
 		}
 	} else {
 		productOperators = map[string]string{
-			string(integreatlyv1alpha1.ProductUps):       string(integreatlyv1alpha1.OperatorVersionUPS),
 			string(integreatlyv1alpha1.ProductRHSSOUser): string(integreatlyv1alpha1.OperatorVersionRHSSOUser),
 		}
 	}
@@ -651,9 +652,8 @@ func IntegreatlyCluster(t *testing.T, f *framework.Framework, ctx *framework.Tes
 	} else {
 		//Product Stage - verify operators deploy
 		products := map[string]string{
-			"amqstreams": "strimzi-cluster-operator",
-			"user-sso":   "keycloak-operator",
-			"ups":        "unifiedpush-operator",
+			//"amq-streams": "amq-streams-cluster-operator",
+			"user-sso": "keycloak-operator",
 		}
 		if err = integreatlyTest(t, f, ctx, products, isSelfManaged); err != nil {
 			t.Fatal(err)
