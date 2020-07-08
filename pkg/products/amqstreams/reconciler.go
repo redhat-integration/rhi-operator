@@ -127,7 +127,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, installation *integreatlyv1a
 
 	phase, err = r.reconcileSubscription(ctx, serverClient, installation, productNamespace, operatorNamespace)
 	if err != nil || phase != integreatlyv1alpha1.PhaseCompleted {
-		events.HandleError(r.recorder, installation, phase, fmt.Sprintf("Failed to reconcile %s subscription", constants.AMQStreamsSubscriptionName), err)
+		events.HandleError(r.recorder, installation, phase, fmt.Sprintf("Failed to reconcile %s subscription", constants.AMQStreamsSubscriptionPackageName), err)
 		return phase, err
 	}
 
@@ -278,9 +278,9 @@ func (r *Reconciler) reconcileSubscription(ctx context.Context, serverClient k8s
 	}
 
 	target := marketplace.Target{
-		Pkg:       constants.AMQStreamsSubscriptionName,
+		Pkg:       constants.AMQStreamsSubscriptionPackageName,
 		Namespace: operatorNamespace,
-		Channel:   marketplace.IntegreatlyChannel,
+		Channel:   constants.AMQStreamsSubscriptionChannelName,
 	}
 
 	indexImage, found := r.Config.GetIndexImage()
