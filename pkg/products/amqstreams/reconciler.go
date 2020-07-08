@@ -282,8 +282,16 @@ func (r *Reconciler) reconcileSubscription(ctx context.Context, serverClient k8s
 		Namespace: operatorNamespace,
 		Channel:   marketplace.IntegreatlyChannel,
 	}
+
+	indexImage, found := r.Config.GetIndexImage()
+	if !found {
+		err := fmt.Errorf("Required index image environment variable '%s' not defined", config.AMQStreamsIndexImageEnvironmentVariableName)
+		events.HandleError(r.recorder, inst, integreatlyv1alpha1.PhaseFailed, err.Error(), err)
+		return integreatlyv1alpha1.PhaseFailed, err
+	}
+
 	catalogSourceReconciler := marketplace.NewGRPCImageCatalogSourceReconciler(
-		r.Config.GetIndexImage(),
+		indexImage,
 		serverClient,
 		operatorNamespace,
 		marketplace.CatalogSourceName,

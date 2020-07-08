@@ -11,6 +11,8 @@ type AMQStreams struct {
 	config ProductConfig
 }
 
+const AMQStreamsIndexImageEnvironmentVariableName = "RELATED_IMAGE_AMQ_STREAMS_INDEX_IMAGE"
+
 func NewAMQStreams(config ProductConfig) *AMQStreams {
 	return &AMQStreams{config: config}
 }
@@ -65,6 +67,6 @@ func (a *AMQStreams) GetOperatorVersion() integreatlyv1alpha1.OperatorVersion {
 	return integreatlyv1alpha1.OperatorVersionAMQStreams
 }
 
-func (a *AMQStreams) GetIndexImage() string {
-	return GetEnvVar("RELATED_IMAGE_AMQ_STREAMS_INDEX_IMAGE", "quay.io/redhat-integration/rhi-operator:index-image-master")
+func (a *AMQStreams) GetIndexImage() (string, bool) {
+	return LookupEnvVar(AMQStreamsIndexImageEnvironmentVariableName)
 }
