@@ -13,7 +13,7 @@ metadata:
     containerImage: 'apicurio/apicurio-registry-operator:latest'
     support: 'Apicurio Project'
     capabilities: Basic Install
-    repository: 'docker.io/apicurio/apicurio-registry-operator:0.0.3-dev'
+    repository: 'docker.io/apicurio/apicurio-registry-operator:0.0.2'
 spec:
   displayName: Apicurio Registry Operator
   description: >
@@ -252,7 +252,7 @@ spec:
                 serviceAccountName: apicurio-registry
                 containers:
                   - name: apicurio-registry
-                    image: 'docker.io/apicurio/apicurio-registry-operator:0.0.3-dev'
+                    image: 'docker.io/apicurio/apicurio-registry-operator:0.0.2'
                     imagePullPolicy: Always
                     env:
                       - name:  REGISTRY_IMAGE_STREAMS
