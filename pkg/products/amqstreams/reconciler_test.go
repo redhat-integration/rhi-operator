@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"testing"
 
 	"github.com/integr8ly/integreatly-operator/pkg/resources/constants"
@@ -32,6 +33,10 @@ import (
 	k8sclient "sigs.k8s.io/controller-runtime/pkg/client"
 	fakeclient "sigs.k8s.io/controller-runtime/pkg/client/fake"
 )
+
+func initializeTestEnvironment() {
+	os.Setenv(config.AMQStreamsIndexImageEnvironmentVariableName, "faketestindeximage")
+}
 
 func basicConfigMock() *config.ConfigReadWriterMock {
 	return &config.ConfigReadWriterMock{
@@ -63,6 +68,7 @@ func setupRecorder() record.EventRecorder {
 }
 
 func TestReconciler_config(t *testing.T) {
+	initializeTestEnvironment()
 	scheme, err := getBuildScheme()
 	if err != nil {
 		t.Fatal(err)
@@ -160,6 +166,7 @@ func TestReconciler_config(t *testing.T) {
 }
 
 func TestReconciler_reconcileCustomResource(t *testing.T) {
+	initializeTestEnvironment()
 	scheme := runtime.NewScheme()
 	kafkav1alpha1.SchemeBuilder.AddToScheme(scheme)
 
@@ -236,6 +243,7 @@ func TestReconciler_reconcileCustomResource(t *testing.T) {
 }
 
 func TestReconciler_handleProgress(t *testing.T) {
+	initializeTestEnvironment()
 	scheme, err := getBuildScheme()
 	if err != nil {
 		t.Fatal(err)
@@ -395,6 +403,7 @@ func TestReconciler_handleProgress(t *testing.T) {
 }
 
 func TestReconciler_fullReconcile(t *testing.T) {
+	initializeTestEnvironment()
 	scheme, err := getBuildScheme()
 	if err != nil {
 		t.Fatal(err)
