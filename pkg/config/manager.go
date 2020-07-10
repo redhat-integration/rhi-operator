@@ -58,6 +58,7 @@ type ConfigReadWriter interface {
 	ReadCloudResources() (*CloudResources, error)
 	ReadDataSync() (*DataSync, error)
 	ReadMonitoringSpec() (*MonitoringSpec, error)
+	ReadCamelK() (*CamelK, error)
 }
 
 //go:generate moq -out ConfigReadable_moq.go . ConfigReadable
@@ -128,6 +129,8 @@ func (m *Manager) ReadProduct(product integreatlyv1alpha1.ProductName) (ConfigRe
 		return m.ReadDataSync()
 	case integreatlyv1alpha1.ProductMonitoringSpec:
 		return m.ReadMonitoringSpec()
+	case integreatlyv1alpha1.ProductCamelK:
+		return m.ReadCamelK()
 	}
 
 	return nil, fmt.Errorf("no config found for product %v", product)
@@ -277,6 +280,14 @@ func (m *Manager) ReadDataSync() (*DataSync, error) {
 		return nil, err
 	}
 	return NewDataSync(config), nil
+}
+
+func (m *Manager) ReadCamelK() (*CamelK, error) {
+	config, err := m.readConfigForProduct(integreatlyv1alpha1.ProductCamelK)
+	if err != nil {
+		return nil, err
+	}
+	return NewCamelK(config), nil
 }
 
 func (m *Manager) WriteConfig(config ConfigReadable) error {

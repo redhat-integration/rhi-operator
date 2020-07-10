@@ -8,6 +8,8 @@ require (
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/RHsyseng/operator-utils v0.0.0-20200107144857-313dbcf0e3bd
 	github.com/aerogear/unifiedpush-operator v0.5.0
+	github.com/apache/camel-k/pkg/apis/camel v0.0.0
+	github.com/apache/camel-k/pkg/client/camel v0.0.0
 	// No tags on the apicurio repo so needed to use a commit hash
 	github.com/apicurio/apicurio-operators/apicurito v0.0.0-20200123142409-83e0a91dd6be
 	github.com/aws/aws-sdk-go v1.25.50
@@ -84,6 +86,12 @@ replace (
 replace (
 	github.com/operator-framework/operator-sdk => github.com/operator-framework/operator-sdk v0.15.1
 	sigs.k8s.io/controller-runtime => sigs.k8s.io/controller-runtime v0.4.0
+)
+
+// Camel K local modules
+replace (
+	github.com/apache/camel-k/pkg/apis/camel => github.com/apache/camel-k/pkg/apis/camel v0.0.0-20200605175945-38c24698b16d
+	github.com/apache/camel-k/pkg/client/camel => github.com/apache/camel-k/pkg/client/camel v0.0.0-20200605175945-38c24698b16d
 )
 
 replace github.com/openshift/api => github.com/openshift/api v0.0.0-20190924102528-32369d4db2ad // Required until https://github.com/operator-framework/operator-lifecycle-manager/pull/1241 is resolved

@@ -64,6 +64,12 @@ github.com/RHsyseng/operator-utils/pkg/olm
 github.com/aerogear/unifiedpush-operator/pkg/apis/push/v1alpha1
 # github.com/andybalholm/cascadia v1.1.0
 github.com/andybalholm/cascadia
+# github.com/apache/camel-k/pkg/apis/camel v0.0.0 => github.com/apache/camel-k/pkg/apis/camel v0.0.0-20200605175945-38c24698b16d
+github.com/apache/camel-k/pkg/apis/camel/v1
+# github.com/apache/camel-k/pkg/client/camel v0.0.0 => github.com/apache/camel-k/pkg/client/camel v0.0.0-20200605175945-38c24698b16d
+github.com/apache/camel-k/pkg/client/camel/clientset/versioned
+github.com/apache/camel-k/pkg/client/camel/clientset/versioned/scheme
+github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1
 # github.com/apicurio/apicurio-operators/apicurito v0.0.0-20200123142409-83e0a91dd6be
 github.com/apicurio/apicurio-operators/apicurito/pkg/apis/apicur/v1alpha1
 # github.com/asaskevich/govalidator v0.0.0-20190424111038-f61b66f89f4a

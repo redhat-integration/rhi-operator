@@ -52,6 +52,7 @@ var (
 	ProductCloudResources      ProductName = "cloud-resources"
 	ProductDataSync            ProductName = "datasync"
 	ProductMonitoringSpec      ProductName = "monitoring-spec"
+	ProductCamelK              ProductName = "camel-k"
 
 	// Could not find a way to determine these versions dynamically, so they are hard-coded
 	// It is preferable to determine the version of a product dynamically (from a CR, or configmap, etc)
@@ -72,6 +73,7 @@ var (
 	VersionRHSSOUser           ProductVersion = "7.3"
 	VersionMonitoringSpec      ProductVersion = "1.0"
 	VersionSolutionExplorer    ProductVersion = "2.25.1"
+	VersionCamelK              ProductVersion = "1.0.0"
 
 	// Versioning for Fuse on OpenShift does not follow a similar pattern to other products.
 	// It is currently implicitly tied to version 7.6 of Fuse, hence the 7.6 value for VersionFuseOnOpenshift above
@@ -99,6 +101,7 @@ var (
 	OperatorVersionApicurioRegistry    OperatorVersion = "0.0.2"
 	OperatorVersionApicurito           OperatorVersion = "1.6.0"
 	OperatorVersionMonitoringSpec      OperatorVersion = "1.0"
+	OperatorVersionCamelK              OperatorVersion = "1.0.0"
 
 	// Event reasons to be used when emitting events
 	EventProcessingError       string = "ProcessingError"

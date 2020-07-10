@@ -14,4 +14,5 @@ const (
 	SolutionExplorerSubscriptionName = "rhmi-solution-explorer"
 	ThreeScaleSubscriptionName       = "rhmi-3scale"
 	UPSSubscriptionName              = "rhmi-unifiedpush"
+	CamelKSubscriptionName           = "rhmi-camel-k"
 )

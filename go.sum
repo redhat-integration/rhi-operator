@@ -98,6 +98,10 @@ github.com/andybalholm/cascadia v1.1.0/go.mod h1:GsXiBklL0woXo1j/WYWtSYYC4ouU9Pq
 github.com/anmitsu/go-shlex v0.0.0-20161002113705-648efa622239/go.mod h1:2FmKhYUyUczH0OGQWaF5ceTx0UBShxjsH6f8oGKYe2c=
 github.com/ant31/crd-validation v0.0.0-20180702145049-30f8a35d0ac2/go.mod h1:X0noFIik9YqfhGYBLEHg8LJKEwy7QIitLQuFMpKLcPk=
 github.com/antihax/optional v0.0.0-20180407024304-ca021399b1a6/go.mod h1:V8iCPQYkqmusNa815XgQio277wI47sdRh1dUOLdyC6Q=
+github.com/apache/camel-k/pkg/apis/camel v0.0.0-20200605175945-38c24698b16d h1:4O8R79/zPh9wHYTz4aLZhgbEODfM8bfEu4Lh2NvOBkY=
+github.com/apache/camel-k/pkg/apis/camel v0.0.0-20200605175945-38c24698b16d/go.mod h1:9FI+f0Oc8/id8f9sZvqDh+LytryHkeacB+HfS8C4guw=
+github.com/apache/camel-k/pkg/client/camel v0.0.0-20200605175945-38c24698b16d h1:6OrmpRjONTP615Z2V3TCO6P692dQYnowYDZ7lsdnw5Y=
+github.com/apache/camel-k/pkg/client/camel v0.0.0-20200605175945-38c24698b16d/go.mod h1:RW9ngeYcLGn1st5yB4j+gadmqm28nsB1jNcck91he2E=
 github.com/apache/thrift v0.12.0/go.mod h1:cp2SuWMxlEZw2r+iP2GNCdIi4C1qmUzdZFSVb+bacwQ=
 github.com/apicurio/apicurio-operators/apicurito v0.0.0-20200123142409-83e0a91dd6be h1:2fIkF8jKy/AaPAX1OkRCDHxQeuQW0fTl7ydcBUbNfkM=
 github.com/apicurio/apicurio-operators/apicurito v0.0.0-20200123142409-83e0a91dd6be/go.mod h1:AZfEaK9Sda9yajwNjP56xzT7y+BP5z5KdIUSzz+wYC0=

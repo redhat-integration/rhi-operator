@@ -1,0 +1,4 @@
+packageName: rhmi-camel-k
+channels:
+  - name: rhmi
+    currentCSV: camel-k-operator.v1.0.0
